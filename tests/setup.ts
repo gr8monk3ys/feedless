@@ -1,3 +1,16 @@
+import { afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+
+// This project runs vitest without `test.globals: true`, so
+// @testing-library/react's built-in auto-cleanup (which feature-detects a
+// global `afterEach`) never registers itself. Without this, DOM trees from
+// `render()` in one test accumulate into `document.body` for every
+// subsequent test in the same file/run, causing "found multiple elements"
+// failures in any suite that renders more than once (see tests/popup.test.tsx).
+afterEach(() => {
+  cleanup();
+});
+
 // Node 20.19+/22+ ships an experimental global Web Storage API that defines
 // `localStorage`/`sessionStorage` accessors directly on `globalThis` (their
 // getters return `undefined` unless `--localstorage-file` is passed). Vitest's
