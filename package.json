@@ -11,7 +11,7 @@
     "zip:firefox": "bun run generate && wxt zip -b firefox",
     "zip:safari": "bun run generate && wxt zip -b safari",
     "compile": "wxt prepare && tsc --noEmit",
-    "test": "vitest run",
+    "test": "NODE_OPTIONS=--no-experimental-webstorage vitest run",
     "e2e": "playwright test",
     "postinstall": "wxt prepare"
   },
