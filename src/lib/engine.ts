@@ -37,7 +37,11 @@ export function readCache(): Settings | null {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
-    return parsed?.v === 1 && typeof parsed.features === 'object' ? parsed : null;
+    const featuresOk =
+      parsed?.features !== null &&
+      typeof parsed?.features === 'object' &&
+      !Array.isArray(parsed?.features);
+    return parsed?.v === 1 && featuresOk ? parsed : null;
   } catch {
     return null;
   }
@@ -63,8 +67,15 @@ export async function startEngine(
     root.setAttribute('data-df-path', classifyPath(platform, location.pathname));
 
   // 1. Synchronous, pre-paint: last-known settings (or defaults).
+  // The cache is page-writable (regular localStorage), so a hostile or
+  // malformed value must never be able to throw here and block the
+  // authoritative async stamp below — swallow and fall through to defaults.
   restampPath();
-  stamp(readCache() ?? DEFAULT_SETTINGS);
+  try {
+    stamp(readCache() ?? DEFAULT_SETTINGS);
+  } catch {
+    stamp(DEFAULT_SETTINGS);
+  }
 
   // 2. Authoritative async settings, then keep following changes.
   const live = await getSettings();

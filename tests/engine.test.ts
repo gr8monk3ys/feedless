@@ -55,6 +55,10 @@ describe('cache', () => {
     expect(readCache()).toEqual(DEFAULT_SETTINGS);
     localStorage.setItem('feedless:settings', '{not json');
     expect(readCache()).toBeNull();
+    localStorage.setItem('feedless:settings', '{"v":1,"features":null}');
+    expect(readCache()).toBeNull();
+    localStorage.setItem('feedless:settings', '{"v":1,"features":[]}');
+    expect(readCache()).toBeNull();
   });
 });
 
@@ -77,5 +81,12 @@ describe('startEngine', () => {
     expect(root.hasAttribute('data-df-ig-feed')).toBe(false);
     expect(readCache()!.features['ig.feed']).toBe(false);
     restampPath(); // must not throw
+  });
+
+  it('ignores a poisoned cache and still stamps defaults', async () => {
+    localStorage.setItem('feedless:settings', '{"v":1,"features":null}');
+    await expect(startEngine('ig', IG_FEATURES)).resolves.toBeDefined();
+    const root = document.documentElement;
+    expect(root.hasAttribute('data-df-ig-feed')).toBe(true); // default ON
   });
 });
