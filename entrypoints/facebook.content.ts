@@ -19,7 +19,8 @@ export default defineContentScript({
       // container renders after SPA nav settles
       setTimeout(sync, 300);
     });
-    watchSettings(() => void sync());
+    const unwatch = watchSettings(() => void sync());
+    ctx.onInvalidated(unwatch);
     // the host <div role="main"> appears after document_start — watch until it exists
     const bodyReady = new MutationObserver(() => {
       if (document.querySelector('div[role="main"]')) {
@@ -38,11 +39,12 @@ export default defineContentScript({
     }
 
     // self-diagnosis: once, well after the page settles
-    setTimeout(async () => {
+    const diagnosisTimer = setTimeout(async () => {
       const s = await getSettings();
       const path = classifyPath('fb', location.pathname);
       const result = findSuspects(FB_FEATURES, s, path, document);
       await recordDiagnosis(result, new Date().toISOString().slice(0, 10));
     }, 8_000);
+    ctx.onInvalidated(() => clearTimeout(diagnosisTimer));
   },
 });
