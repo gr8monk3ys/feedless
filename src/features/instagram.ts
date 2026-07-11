@@ -105,11 +105,6 @@ export const IG_FEATURES: FeatureDef[] = [
       // following the div that wraps the Notifications svg.
       { selector: 'div:has(> svg[aria-label="Notifications"]) + div', mayBeAbsent: true },
     ],
-    js: {
-      containerSelector: 'nav',
-      unitSelector: '[aria-label*="notification" i]',
-      textAnchors: ['notification'],
-    },
     verify: 'Have an unread notification — red badge/dot on heart + DM icons gone.',
     confidence: 'medium',
   },

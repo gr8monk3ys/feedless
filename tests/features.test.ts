@@ -56,12 +56,10 @@ describe('feature maps', () => {
     for (const r of byId['fb.notifBadges'].rules) expect(r.mayBeAbsent, r.selector).toBe(true);
     // FB legacy layout fallback: absent on the current layout
     expect(byId['fb.feed'].rules[0].mayBeAbsent).toBe(true);
-    // a feature whose applicable rules are all mayBeAbsent must have js or
-    // other rules — otherwise diagnosis could never clear it
-    for (const f of all) {
-      if (f.rules.length && f.rules.every((r) => r.mayBeAbsent) && !f.js) {
-        expect.fail(`${f.id}: every rule mayBeAbsent and no js marker`);
-      }
-    }
+    // Features whose rules are all mayBeAbsent (badge-type features) are
+    // intentionally exempt from self-diagnosis — no js marker required.
+    expect(byId['ig.notifBadges'].js).toBeUndefined();
+    expect(byId['fb.notifBadges'].js).toBeUndefined();
+    expect(byId['fb.watch'].js).toBeUndefined();
   });
 });

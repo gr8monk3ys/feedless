@@ -53,11 +53,6 @@ export const FB_FEATURES: FeatureDef[] = [
       { selector: 'a[href^="/watch"]', mayBeAbsent: true },
       { selector: 'div[role="main"]', paths: ['watch'], mayBeAbsent: true },
     ],
-    js: {
-      containerSelector: 'nav, aside',
-      unitSelector: 'a[href^="/watch"]',
-      textAnchors: ['Watch', 'Video'],
-    },
     verify: 'Watch nav link gone; facebook.com/watch shows empty page.',
     confidence: 'medium',
   },
@@ -108,11 +103,6 @@ export const FB_FEATURES: FeatureDef[] = [
     // WITHOUT an svg inside — the icon button carries the same label but
     // contains the bell svg, so :not(:has(svg)) selects only the badge.
     rules: [{ selector: 'div[role="button"][aria-label*="unread" i]:not(:has(svg))', mayBeAbsent: true }],
-    js: {
-      containerSelector: 'nav, header',
-      unitSelector: '[aria-label*="unread" i]:not(:has(svg))',
-      textAnchors: ['unread', 'notification'],
-    },
     verify: 'Have an unread notification — red count badge gone, bell icon stays.',
     confidence: 'medium',
   },

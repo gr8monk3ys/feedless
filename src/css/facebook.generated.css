@@ -5,13 +5,11 @@ html[data-df-fb-reels] a[href^="/reel"] { display: none !important; }
 html[data-df-fb-reels][data-df-path="reels"] div[role="main"] { display: none !important; }
 html[data-df-fb-stories] div[aria-label="Stories"] { display: none !important; }
 html[data-df-fb-stories][data-df-path="stories"] div[role="main"] { display: none !important; }
-html[data-df-fb-watch] [data-df-fb-watch-unit] { display: none !important; }
 html[data-df-fb-watch] a[href^="/watch"] { display: none !important; }
 html[data-df-fb-watch][data-df-path="watch"] div[role="main"] { display: none !important; }
 html[data-df-fb-suggested] [data-df-fb-suggested-unit] { display: none !important; }
 html[data-df-fb-like-counts] [aria-label*="reacted" i] { display: none !important; }
 html[data-df-fb-comments] div[aria-label*="Comment by" i] { display: none !important; }
-html[data-df-fb-notif-badges] [data-df-fb-notif-badges-unit] { display: none !important; }
 html[data-df-fb-notif-badges] div[role="button"][aria-label*="unread" i]:not(:has(svg)) { display: none !important; }
 html[data-df-fb-right-rail][data-df-path="home"] div[role="complementary"] { display: none !important; }
 html[data-df-fb-left-nav] div[role="navigation"][aria-label*="Shortcuts" i] { display: none !important; }
