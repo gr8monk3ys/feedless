@@ -5,21 +5,33 @@
   <div role="navigation" aria-label="Shortcuts"><a href="/groups/1/">A group</a></div>
   <nav>
     <a href="/watch/">Watch</a>
-    <a href="/reel/123456">Reel</a>
-    <span aria-label="3 notifications"></span>
+    <a href="/reel/?s=tab">Reel</a>
+    <!-- icon button (has svg, same label) must NOT match; badge (no svg) must -->
+    <div role="button" aria-label="Notifications, 1 unread"><svg role="img"></svg></div>
+    <div role="button" aria-label="Notifications, 1 unread"><span>1</span></div>
   </nav>
   <div role="main">
     <div aria-label="Stories" role="region"><div>story cards</div></div>
+    <!-- legacy feed layout (role=feed still in rollout on some accounts) -->
     <div role="feed">
       <div>
         <div role="article">
           <span>A post from a friend</span>
-          <span aria-label="Like: 12 reactions">12</span>
+          <span aria-label="See who reacted to this">12</span>
           <div aria-label="Comment by Jane Doe">nice!</div>
-          <ul><li><div role="article">a comment</div></li></ul>
         </div>
       </div>
       <div><span>Suggested for you</span></div>
+    </div>
+    <!-- current feed layout: container identified only by its
+         screen-reader heading; marked by the observer, not CSS -->
+    <div>
+      <h3>Feed posts</h3>
+      <div aria-hidden="true"></div>
+      <div>
+        <div><span>A post in the new layout</span></div>
+        <div><span>People you may know</span></div>
+      </div>
     </div>
   </div>
   <div role="complementary"><span>Sponsored</span></div>

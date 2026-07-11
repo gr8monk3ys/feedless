@@ -1,6 +1,6 @@
 export type Platform = 'ig' | 'fb';
 export type Group = 'core' | 'engagement' | 'notifications' | 'chrome';
-export type PageKind = 'home' | 'reels' | 'explore' | 'stories' | 'watch' | 'other';
+export type PageKind = 'home' | 'reels' | 'explore' | 'stories' | 'watch' | 'post' | 'other';
 
 export interface CssRule {
   selector: string;

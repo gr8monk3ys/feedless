@@ -7,7 +7,13 @@
     <a href="/reels/">Reels</a>
     <a href="/explore/">Explore</a>
     <a href="/direct/inbox/">Messages</a>
-    <span aria-label="14 notifications"></span>
+    <!-- notification badge (nav rail / floating pill) -->
+    <div aria-label="Direct messaging - 1 new notification link">1</div>
+    <!-- heart icon: unlabelled red dot is the div after the svg wrapper -->
+    <div>
+      <div><svg aria-label="Notifications" role="img"></svg></div>
+      <div class="dot"></div>
+    </div>
   </nav>
   <main>
     <!-- stories tray -->
@@ -22,11 +28,30 @@
       <article>
         <img alt="Photo by someone" />
         <a href="/p/abc123/liked_by/">42 likes</a>
-        <ul>
-          <li>caption</li>
-          <ul><li>first comment</li></ul>
-        </ul>
       </article>
+    </div>
+    <!-- post-page action row: numeric counts next to Share icon -->
+    <section>
+      <div>
+        <svg aria-label="Share" role="img"></svg>
+        <span role="button">9</span>
+        <span role="button">6</span>
+      </div>
+    </section>
+    <!-- comment row: <time> inside a profile link, five divs up = the row.
+         The caption's <time> is NOT inside a link, so it never matches. -->
+    <div class="comment-row">
+      <div>
+        <div>
+          <div>
+            <div>
+              <span><a role="link" href="/someuser/"><time datetime="2026-07-09">3h</time></a></span>
+              <span>commenter</span>
+            </div>
+            <div>the comment text</div>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- suggested accounts sidebar -->
     <div>

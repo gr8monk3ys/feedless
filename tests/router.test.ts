@@ -9,6 +9,7 @@ describe('classifyPath', () => {
     ['/explore/', 'explore'],
     ['/explore/tags/cats/', 'explore'],
     ['/stories/someuser/1/', 'stories'],
+    ['/p/DajV-LAJWVE/', 'post'],
     ['/someuser/', 'other'],
     ['/direct/inbox/', 'other'],
   ] as const)('ig %s -> %s', (path, kind) => {

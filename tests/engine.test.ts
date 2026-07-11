@@ -89,4 +89,23 @@ describe('startEngine', () => {
     const root = document.documentElement;
     expect(root.hasAttribute('data-df-ig-feed')).toBe(true); // default ON
   });
+
+  it('restampPath prefers the wxt:locationchange newUrl over the stale location', async () => {
+    // WXT fires the event before the URL change lands, so the handler must
+    // classify the event's newUrl, not location.pathname.
+    const { restampPath } = await startEngine('ig', IG_FEATURES);
+    const root = document.documentElement;
+
+    restampPath({ newUrl: new URL('https://www.instagram.com/reels/') });
+    expect(root.getAttribute('data-df-path')).toBe('reels');
+
+    restampPath({ newUrl: 'https://www.instagram.com/p/abc123/' });
+    expect(root.getAttribute('data-df-path')).toBe('post');
+
+    restampPath({ newUrl: 'not a url' }); // falls back to location, no throw
+    expect(root.getAttribute('data-df-path')).toBeTruthy();
+
+    restampPath(); // no event at all still works
+    expect(root.getAttribute('data-df-path')).toBeTruthy();
+  });
 });

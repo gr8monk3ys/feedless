@@ -6,6 +6,7 @@ export function classifyPath(platform: Platform, pathname: string): PageKind {
     if (pathname.startsWith('/reels')) return 'reels';
     if (pathname.startsWith('/explore')) return 'explore';
     if (pathname.startsWith('/stories')) return 'stories';
+    if (pathname.startsWith('/p/')) return 'post';
     return 'other';
   }
   if (pathname.startsWith('/reel')) return 'reels';

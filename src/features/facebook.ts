@@ -6,9 +6,19 @@ export const FB_FEATURES: FeatureDef[] = [
     label: 'Hide news feed',
     group: 'core',
     default: true,
+    // Facebook removed role="feed" (observed live 2026-07-09). The feed
+    // container is now only identifiable by its screen-reader heading
+    // (<h3>Feed posts</h3>), which CSS cannot match by text — the observer
+    // marks it instead. The role="feed" rule stays as a fallback for older
+    // layouts still in rollout.
     rules: [{ selector: 'div[role="feed"]', paths: ['home'] }],
+    js: {
+      containerSelector: 'div[role="main"]',
+      unitSelector: 'div:has(> h3)',
+      textAnchors: ['Feed posts'],
+    },
     verify: 'Open facebook.com — feed posts gone, nav/rails per their own toggles.',
-    confidence: 'high',
+    confidence: 'medium',
   },
   {
     id: 'fb.reels',
@@ -53,7 +63,10 @@ export const FB_FEATURES: FeatureDef[] = [
     default: false,
     rules: [],
     js: {
-      containerSelector: 'div[role="feed"]',
+      // Post units are grandchildren of the feed container (the div whose
+      // direct child is the <h3>Feed posts</h3> screen-reader heading);
+      // role="feed" fallback kept for older layouts.
+      containerSelector: 'div[role="feed"], div[role="main"] div:has(> h3) > div:not([aria-hidden])',
       unitSelector: ':scope > div',
       textAnchors: ['Suggested for you', 'People you may know', 'People You May Know'],
     },
@@ -65,30 +78,33 @@ export const FB_FEATURES: FeatureDef[] = [
     label: 'Hide reaction counts',
     group: 'engagement',
     default: false,
-    rules: [{ selector: 'span[aria-label*="reaction" i]' }],
-    verify: 'Open a post — reaction count pill gone.',
-    confidence: 'low',
+    // Covers both live label forms: "See who reacted to this" (emoji cluster
+    // + count on feed posts) and "1 reaction; see who reacted to this"
+    // (comment-level counts in dialogs).
+    rules: [{ selector: '[aria-label*="reacted" i]' }],
+    verify: 'Open a post — reaction emoji cluster and count gone.',
+    confidence: 'medium',
   },
   {
     id: 'fb.comments',
     label: 'Hide comments',
     group: 'engagement',
     default: false,
-    rules: [
-      { selector: 'ul:has(> li div[role="article"])' },
-      { selector: 'div[aria-label*="Comment by" i]' },
-    ],
-    verify: 'Open a post with comments — comment thread gone.',
-    confidence: 'low',
+    rules: [{ selector: 'div[aria-label*="Comment by" i]' }],
+    verify: 'Open a post with comments — comment rows gone.',
+    confidence: 'medium',
   },
   {
     id: 'fb.notifBadges',
     label: 'Hide notification badges',
     group: 'notifications',
     default: false,
-    rules: [{ selector: 'span[aria-label*="notification" i]' }],
-    verify: 'Have an unread notification — red count badge gone.',
-    confidence: 'low',
+    // The count badge is a small button labelled "Notifications, N unread"
+    // WITHOUT an svg inside — the icon button carries the same label but
+    // contains the bell svg, so :not(:has(svg)) selects only the badge.
+    rules: [{ selector: 'div[role="button"][aria-label*="unread" i]:not(:has(svg))' }],
+    verify: 'Have an unread notification — red count badge gone, bell icon stays.',
+    confidence: 'medium',
   },
   {
     id: 'fb.rightRail',
