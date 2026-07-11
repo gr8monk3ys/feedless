@@ -6,6 +6,9 @@ export interface CssRule {
   selector: string;
   /** Restrict this rule to specific pages via html[data-df-path]. Omit = all pages. */
   paths?: PageKind[];
+  /** True when matching nothing is normal (no unread badges, legacy-layout
+   *  fallbacks). Self-diagnosis ignores these rules. */
+  mayBeAbsent?: boolean;
 }
 
 /** Config for the MutationObserver that marks units CSS can't distinguish. */

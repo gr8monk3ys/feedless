@@ -11,6 +11,7 @@ html[data-df-ig-suggested] [data-df-ig-suggested-unit] { display: none !importan
 html[data-df-ig-like-counts] a[href*="/liked_by/"] { display: none !important; }
 html[data-df-ig-like-counts] section:has(svg[aria-label="Share"]) span[role="button"] { display: none !important; }
 html[data-df-ig-comments] div:has(> div > div > div > div > span > a[role="link"] time) { display: none !important; }
+html[data-df-ig-notif-badges] [data-df-ig-notif-badges-unit] { display: none !important; }
 html[data-df-ig-notif-badges] div[aria-label*="new notification" i] { display: none !important; }
 html[data-df-ig-notif-badges] div:has(> svg[aria-label="Notifications"]) + div { display: none !important; }
 html[data-df-ig-sidebar][data-df-path="home"] main div:has(> div a[href^="/explore/people"]) { display: none !important; }

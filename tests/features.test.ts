@@ -48,4 +48,20 @@ describe('feature maps', () => {
     expect(DEFAULT_FEATURE_STATE['fb.comments']).toBe(false);
     expect(FEATURES.ig).toBe(IG_FEATURES);
   });
+
+  it('rules that legitimately match nothing are flagged mayBeAbsent', () => {
+    const byId = Object.fromEntries(all.map((f) => [f.id, f]));
+    // badge rules: nothing to match when there are no unread notifications
+    for (const r of byId['ig.notifBadges'].rules) expect(r.mayBeAbsent, r.selector).toBe(true);
+    for (const r of byId['fb.notifBadges'].rules) expect(r.mayBeAbsent, r.selector).toBe(true);
+    // FB legacy layout fallback: absent on the current layout
+    expect(byId['fb.feed'].rules[0].mayBeAbsent).toBe(true);
+    // a feature whose applicable rules are all mayBeAbsent must have js or
+    // other rules — otherwise diagnosis could never clear it
+    for (const f of all) {
+      if (f.rules.length && f.rules.every((r) => r.mayBeAbsent) && !f.js) {
+        expect.fail(`${f.id}: every rule mayBeAbsent and no js marker`);
+      }
+    }
+  });
 });

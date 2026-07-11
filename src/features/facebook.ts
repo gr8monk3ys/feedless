@@ -11,7 +11,7 @@ export const FB_FEATURES: FeatureDef[] = [
     // (<h3>Feed posts</h3>), which CSS cannot match by text — the observer
     // marks it instead. The role="feed" rule stays as a fallback for older
     // layouts still in rollout.
-    rules: [{ selector: 'div[role="feed"]', paths: ['home'] }],
+    rules: [{ selector: 'div[role="feed"]', paths: ['home'], mayBeAbsent: true }],
     js: {
       containerSelector: 'div[role="main"]',
       unitSelector: 'div:has(> h3)',
@@ -50,9 +50,14 @@ export const FB_FEATURES: FeatureDef[] = [
     group: 'core',
     default: true,
     rules: [
-      { selector: 'a[href^="/watch"]' },
-      { selector: 'div[role="main"]', paths: ['watch'] },
+      { selector: 'a[href^="/watch"]', mayBeAbsent: true },
+      { selector: 'div[role="main"]', paths: ['watch'], mayBeAbsent: true },
     ],
+    js: {
+      containerSelector: 'nav, aside',
+      unitSelector: 'a[href^="/watch"]',
+      textAnchors: ['Watch', 'Video'],
+    },
     verify: 'Watch nav link gone; facebook.com/watch shows empty page.',
     confidence: 'medium',
   },
@@ -102,7 +107,12 @@ export const FB_FEATURES: FeatureDef[] = [
     // The count badge is a small button labelled "Notifications, N unread"
     // WITHOUT an svg inside — the icon button carries the same label but
     // contains the bell svg, so :not(:has(svg)) selects only the badge.
-    rules: [{ selector: 'div[role="button"][aria-label*="unread" i]:not(:has(svg))' }],
+    rules: [{ selector: 'div[role="button"][aria-label*="unread" i]:not(:has(svg))', mayBeAbsent: true }],
+    js: {
+      containerSelector: 'nav, header',
+      unitSelector: '[aria-label*="unread" i]:not(:has(svg))',
+      textAnchors: ['unread', 'notification'],
+    },
     verify: 'Have an unread notification — red count badge gone, bell icon stays.',
     confidence: 'medium',
   },

@@ -100,11 +100,16 @@ export const IG_FEATURES: FeatureDef[] = [
     rules: [
       // Count badges (nav rail + floating Messages pill) carry aria-labels
       // like "Direct messaging - 1 new notification link".
-      { selector: 'div[aria-label*="new notification" i]' },
+      { selector: 'div[aria-label*="new notification" i]', mayBeAbsent: true },
       // The unlabelled red dot on the heart icon is the div immediately
       // following the div that wraps the Notifications svg.
-      { selector: 'div:has(> svg[aria-label="Notifications"]) + div' },
+      { selector: 'div:has(> svg[aria-label="Notifications"]) + div', mayBeAbsent: true },
     ],
+    js: {
+      containerSelector: 'nav',
+      unitSelector: '[aria-label*="notification" i]',
+      textAnchors: ['notification'],
+    },
     verify: 'Have an unread notification — red badge/dot on heart + DM icons gone.',
     confidence: 'medium',
   },
