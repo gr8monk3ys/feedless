@@ -56,4 +56,19 @@ describe('syncCard', () => {
     document.documentElement.setAttribute('data-df-path', 'home');
     expect(() => syncCard('ig', settings())).not.toThrow();
   });
+
+  it('replaces a counterfeit card the page planted under our attribute', () => {
+    setup({ 'data-df-ig-feed': '', 'data-df-path': 'home' });
+    // The page can squat on our attribute. Such an element has no shadow root
+    // and none of our internals, so we must discard it rather than drive it.
+    const counterfeit = document.createElement('div');
+    counterfeit.setAttribute('data-feedless-card', '');
+    document.querySelector('main')!.prepend(counterfeit);
+
+    expect(() => syncCard('ig', settings('Reply to DMs, then leave.'))).not.toThrow();
+
+    const card = document.querySelector('[data-feedless-card]');
+    expect(card).not.toBe(counterfeit);
+    expect(document.querySelectorAll('[data-feedless-card]')).toHaveLength(1);
+  });
 });
