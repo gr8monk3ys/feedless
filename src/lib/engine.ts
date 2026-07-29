@@ -5,6 +5,7 @@ import {
   DEFAULT_SETTINGS,
   getSettings,
   isEnabled,
+  isPlatformActive,
   watchSettings,
   type Settings,
 } from './storage';
@@ -15,8 +16,9 @@ export function computeAttrs(
   s: Settings,
   platform: Platform,
   features: FeatureDef[],
+  now: number,
 ): string[] {
-  if (!isEnabled(s, `${platform}._enabled`)) return [];
+  if (!isPlatformActive(s, platform, now)) return [];
   return features.filter((f) => isEnabled(s, f.id)).map((f) => attrForFeature(f.id));
 }
 
@@ -61,8 +63,19 @@ export async function startEngine(
   features: FeatureDef[],
 ): Promise<{ restampPath: (ev?: unknown) => void }> {
   const root = document.documentElement;
-  const stamp = (s: Settings) =>
-    applyAttrs(root, features, computeAttrs(s, platform, features));
+  let latest: Settings = DEFAULT_SETTINGS;
+  let snoozeTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const stamp = (s: Settings) => {
+    latest = s;
+    applyAttrs(root, features, computeAttrs(s, platform, features, Date.now()));
+    // If snoozed, restamp shortly after expiry so open tabs auto-restore.
+    clearTimeout(snoozeTimer);
+    const remaining = (s.snooze?.[platform] ?? 0) - Date.now();
+    if (remaining > 0 && remaining < 2 ** 31 - 1_000) {
+      snoozeTimer = setTimeout(() => stamp(latest), remaining + 250);
+    }
+  };
   // WXT's wxt:locationchange event fires before the URL change is applied,
   // so location.pathname still holds the OLD path inside the handler. The
   // event carries the destination as `newUrl` — prefer it when present.

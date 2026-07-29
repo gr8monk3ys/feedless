@@ -7,7 +7,8 @@ import {
   writeCache,
   startEngine,
 } from '../src/lib/engine';
-import { DEFAULT_SETTINGS, setFeature } from '../src/lib/storage';
+import { DEFAULT_SETTINGS, setFeature, setSnooze } from '../src/lib/storage';
+import { vi } from 'vitest';
 import { IG_FEATURES } from '../src/features/instagram';
 import type { Settings } from '../src/lib/storage';
 
@@ -21,6 +22,7 @@ describe('computeAttrs', () => {
       settingsWith({ 'ig.feed': true, 'ig.reels': false }),
       'ig',
       IG_FEATURES,
+      Date.now(),
     );
     expect(attrs).toContain('data-df-ig-feed');
     expect(attrs).not.toContain('data-df-ig-reels');
@@ -31,6 +33,7 @@ describe('computeAttrs', () => {
       settingsWith({ 'ig._enabled': false, 'ig.feed': true }),
       'ig',
       IG_FEATURES,
+      Date.now(),
     );
     expect(attrs).toEqual([]);
   });
@@ -107,5 +110,39 @@ describe('startEngine', () => {
 
     restampPath(); // no event at all still works
     expect(root.getAttribute('data-df-path')).toBeTruthy();
+  });
+});
+
+describe('snooze stamping', () => {
+  beforeEach(() => {
+    fakeBrowser.reset();
+    localStorage.clear();
+    for (const a of [...document.documentElement.attributes])
+      if (a.name.startsWith('data-df')) document.documentElement.removeAttribute(a.name);
+  });
+
+  it('computeAttrs returns [] while snoozed, attrs after expiry', () => {
+    const s = settingsWith({ 'ig.feed': true });
+    const snoozed = { ...s, snooze: { ig: 1_000 } };
+    expect(computeAttrs(snoozed, 'ig', IG_FEATURES, 999)).toEqual([]);
+    expect(computeAttrs(snoozed, 'ig', IG_FEATURES, 1_000)).toContain('data-df-ig-feed');
+  });
+
+  it('startEngine restamps when a snooze expires', async () => {
+    vi.useFakeTimers();
+    try {
+      await startEngine('ig', IG_FEATURES);
+      const root = document.documentElement;
+      expect(root.hasAttribute('data-df-ig-feed')).toBe(true);
+
+      await setSnooze('ig', Date.now() + 60_000);
+      await vi.advanceTimersByTimeAsync(10); // let the watch fire
+      expect(root.hasAttribute('data-df-ig-feed')).toBe(false);
+
+      await vi.advanceTimersByTimeAsync(61_000); // past expiry
+      expect(root.hasAttribute('data-df-ig-feed')).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

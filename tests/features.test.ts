@@ -48,4 +48,18 @@ describe('feature maps', () => {
     expect(DEFAULT_FEATURE_STATE['fb.comments']).toBe(false);
     expect(FEATURES.ig).toBe(IG_FEATURES);
   });
+
+  it('rules that legitimately match nothing are flagged mayBeAbsent', () => {
+    const byId = Object.fromEntries(all.map((f) => [f.id, f]));
+    // badge rules: nothing to match when there are no unread notifications
+    for (const r of byId['ig.notifBadges'].rules) expect(r.mayBeAbsent, r.selector).toBe(true);
+    for (const r of byId['fb.notifBadges'].rules) expect(r.mayBeAbsent, r.selector).toBe(true);
+    // FB legacy layout fallback: absent on the current layout
+    expect(byId['fb.feed'].rules[0].mayBeAbsent).toBe(true);
+    // Features whose rules are all mayBeAbsent (badge-type features) are
+    // intentionally exempt from self-diagnosis — no js marker required.
+    expect(byId['ig.notifBadges'].js).toBeUndefined();
+    expect(byId['fb.notifBadges'].js).toBeUndefined();
+    expect(byId['fb.watch'].js).toBeUndefined();
+  });
 });

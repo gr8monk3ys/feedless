@@ -7,9 +7,16 @@ main { padding: 12px; }
 .paused { opacity: 0.4; pointer-events: none; }
 section h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #6e6e73; margin: 14px 0 4px; }
 .toggle { display: flex; align-items: center; gap: 8px; padding: 6px 0; cursor: pointer; }
+.snooze { display: flex; align-items: center; gap: 6px; padding: 6px 0 10px; font-size: 12px; color: #6e6e73; flex-wrap: wrap; }
+.snooze button { border: 1px solid #d0d0d5; background: none; border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 12px; color: inherit; }
+.warn { margin-left: 4px; cursor: help; }
+.intention { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #d0d0d5; border-radius: 8px; font: inherit; background: transparent; color: inherit; }
+.banner { display: block; margin-top: 12px; padding: 10px; border-radius: 8px; background: #fff3cd; color: #664d03; font-size: 12px; text-decoration: none; }
 @media (prefers-color-scheme: dark) {
   body { background: #1c1c1e; color: #f2f2f7; }
   .tabs button { background: #2c2c2e; color: #f2f2f7; }
   .tabs button[aria-selected='true'] { background: #f2f2f7; color: #1c1c1e; }
   section h2 { color: #98989e; }
+  .snooze button, .intention { border-color: #3a3a3c; }
+  .banner { background: #3a2f00; color: #ffd60a; }
 }
