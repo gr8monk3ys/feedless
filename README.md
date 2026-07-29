@@ -1,5 +1,9 @@
 # Feedless
 
+<p align="center">
+  <img src="docs/assets/hero.png" alt="feedless preview" width="640">
+</p>
+
 Hide the distracting parts of Instagram and Facebook — feeds, Reels, Stories,
 suggested posts, notification badges, and more. Each surface is an individual
 toggle. Like [Unhook](https://unhook.app/) for YouTube, but for Meta.
