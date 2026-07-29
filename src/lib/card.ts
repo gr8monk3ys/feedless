@@ -34,6 +34,13 @@ export function syncCard(platform: Platform, s: Settings): void {
     return;
   }
 
+  // An element wearing our attribute but missing our internals was planted by
+  // the page (or left by an older version). Discard it and build a real one.
+  if (card && typeof card._set !== 'function') {
+    card.remove();
+    card = null;
+  }
+
   if (!card) {
     card = document.createElement('div');
     card.setAttribute('data-feedless-card', '');

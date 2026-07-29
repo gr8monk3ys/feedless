@@ -19,6 +19,9 @@ const PLATFORM_LABELS: Record<Platform, string> = {
 
 const REPO = 'https://github.com/gr8monk3ys/feedless';
 
+/** Debounce before writing the intention, to batch a typing burst into one write. */
+const INTENTION_SAVE_MS = 300;
+
 function formatRemaining(ms: number): string {
   const m = Math.ceil(ms / 60_000);
   if (m < 60) return `${m}m`;
@@ -54,6 +57,16 @@ export default function App() {
   useEffect(() => {
     getFlagged().then(setFlagged);
   }, []);
+
+  // Persist the intention shortly after typing stops. Waiting for blur loses
+  // the text when the popup is dismissed by an outside click, which is not
+  // guaranteed to fire one; saving per keystroke would burn through the
+  // ~120 writes/minute that chrome.storage.sync allows.
+  useEffect(() => {
+    if (draftIntention == null) return;
+    const t = setTimeout(() => void setIntention(draftIntention), INTENTION_SAVE_MS);
+    return () => clearTimeout(t);
+  }, [draftIntention]);
 
   if (!settings) return null;
 

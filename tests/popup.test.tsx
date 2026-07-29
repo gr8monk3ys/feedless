@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { fakeBrowser } from 'wxt/testing/fake-browser';
 import App from '../entrypoints/popup/App';
@@ -72,6 +72,34 @@ describe('popup v0.2', () => {
     await waitFor(async () => {
       expect((await getSettings()).intention).toBe('Check DMs only');
     });
+  });
+
+  it('intention saves without a blur, which a dismissed popup may never fire', async () => {
+    render(<App />);
+    const input = await screen.findByPlaceholderText(/why did you open/i);
+    fireEvent.change(input, { target: { value: 'Check DMs only' } });
+    // Deliberately no blur: clicking outside tears the popup down, and the
+    // blur handler is not guaranteed to run before the document goes away.
+    await waitFor(async () => {
+      expect((await getSettings()).intention).toBe('Check DMs only');
+    });
+  });
+
+  it('collapses a typing burst into one write, staying inside the sync quota', async () => {
+    render(<App />);
+    const input = await screen.findByPlaceholderText(/why did you open/i);
+    const writes = vi.spyOn(fakeBrowser.storage.sync, 'set');
+
+    for (const value of ['C', 'Ch', 'Che', 'Chec', 'Check DMs only']) {
+      fireEvent.change(input, { target: { value } });
+    }
+
+    await waitFor(async () => {
+      expect((await getSettings()).intention).toBe('Check DMs only');
+    });
+    // chrome.storage.sync allows only 120 writes/minute; one write per
+    // keystroke would exhaust it and Chrome would start rejecting saves.
+    expect(writes.mock.calls.length).toBeLessThanOrEqual(2);
   });
 
   it('flags features suspect for 3+ days and shows the report banner', async () => {
