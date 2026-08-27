@@ -1,46 +1,10 @@
-# Feedless
+# feedless — merged into cocoon, archived
 
-<p align="center">
-  <img src="docs/assets/hero.png" alt="feedless preview" width="640">
-</p>
+This extension no longer lives here. Its feature-rule design
+(`src/features/*.ts` → generated CSS → fixture e2e) and its Instagram and
+Facebook rules were ported into **[cocoon](https://github.com/gr8monk3ys/cocoon)**
+(`src/rules/instagram.ts`, `src/rules/facebook.ts`, `e2e/`), which also covers
+X, YouTube, Reddit and TikTok and has the store listing.
 
-Hide the distracting parts of Instagram and Facebook — feeds, Reels, Stories,
-suggested posts, notification badges, and more. Each surface is an individual
-toggle. Like [Unhook](https://unhook.app/) for YouTube, but for Meta.
-
-## Features
-
-- 19 independent toggles across Instagram (9) and Facebook (10)
-- Instant apply — no page reload, no flash of hidden content
-- Per-site pause switch
-- Settings sync across your browsers
-- **Zero tracking**: no analytics, no network requests, `storage` permission only
-
-## Install (dev)
-
-```bash
-bun install
-bun run dev          # Chrome with the extension loaded
-bun run dev:firefox
-```
-
-## Architecture
-
-Feature definitions in `src/features/*.ts` are the single source of truth:
-the popup UI, the generated hiding CSS (`bun run generate`), and the test
-suite all derive from them. Content scripts stamp `data-df-*` attributes on
-`<html>` at `document_start`; attribute-gated CSS does all hiding. See
-`docs/superpowers/specs/` for the full design.
-
-## Tests
-
-```bash
-bun run test   # unit (Vitest)
-bun run e2e    # selector fixtures (Playwright)
-```
-
-Live-site verification before each release: `docs/verify-checklist.md`.
-
-## License
-
-MIT
+Use cocoon. This repository is kept read-only for history; nothing here is
+maintained, built or released.
